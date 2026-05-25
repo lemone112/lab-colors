@@ -26,9 +26,9 @@ graph TD
     J --> LCS["LCS\n(Labpics Color Space)"]
     M --> LCS
     HOK --> LCS
-    LCS --> CURVE["Кривая\n(NeutralCurve / AccentCurve)"]
-    CURVE --> STEPS["13 hex-цветов\nшкала"]
-    STEPS --> LPC["LPC — контраст\n(APCA + HK)"]
+    LCS --> CURVE["Кривая\n(NeutralCurve / AccentCurve)\nat(t), t ∈ [0..1]"]
+    CURVE --> PAL["Палитра\nнепрерывный градиент"]
+    PAL --> LPC["LPC — контраст\n(APCA + HK)"]
     LPC --> SEM["Семантика"]
 
     style HEX fill:#f0f0f0
@@ -87,7 +87,7 @@ let dim_vc = ViewingConditions::dim_surround(); // c = 0.59
 
 ### 2. Кривая — NeutralCurve
 
-Три якоря (светлый, базовый, тёмный) соединяются кривой в пространстве J'.
+Три якоря (светлый, базовый, тёмный) соединяются непрерывной кривой в пространстве J'. Это не набор шагов — это функция `at(t)` где `t ∈ [0, 1]`. Палитра — непрерывный градиент. `sample_hex(13)` просто выбирает 13 точек из него.
 
 ```mermaid
 graph LR
@@ -162,6 +162,12 @@ use labcolors_core::scale::AccentCurve;
 
 // Нейтральная шкала — светлая тема
 let light = NeutralCurve::new("#FFFFFF", "#787880", "#101012")?;
+// Палитра — непрерывный градиент
+// at(t) — любая точка от 0.0 до 1.0
+let mid = light.at(0.5);
+println!("t=0.5  J'={:.1}", mid.jp);
+
+// sample_hex(N) — N точек из непрерывной кривой
 let steps: Vec<String> = light.sample_hex(13);
 // ["#FFFFFF", "#F0F0F5", "#E1E1E9", ..., "#101012"]
 
